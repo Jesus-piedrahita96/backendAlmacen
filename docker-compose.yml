@@ -1,0 +1,76 @@
+version: '3'
+
+services:
+
+  mariadb:
+    image: jesuspiedrahita96/mariadb
+    build:
+      context: ./database
+      dockerfile: Dockerfile
+    container_name: db-container
+    ports:
+      - "3307:3306"
+    environment:
+      MARIADB_ROOT_PASSWORD: telecable
+      MARIADB_ROOT_USER: root
+      MARIADB_DATABASE: telecable-db
+    volumes:
+      - "db-dataAlmacen:/var/lib/mysql"
+    networks:
+      net-back:
+        ipv4_address: 192.168.0.3
+
+  backend:
+    image: jesuspiedrahita96/backendalmacen
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: backendalmacen-container
+    ports:
+      - "8000:8000"
+    environment:
+      MARIADB_ROOT_PASSWORD: telecable
+      MARIADB_ROOT_USER: root
+      MARIADB_DATABASE: telecable-db
+      MARIADB_PORT: 3306
+      MARIADB_HOST: mariadb
+    volumes:
+      - ./:/app
+    networks:
+      net-back:
+        ipv4_address: 192.168.0.4
+
+  frontend:
+    image: jesuspiedrahita96/frontendalmacen
+    build:
+      context: ../frontendAlmacen/
+      dockerfile: Dockerfile
+    container_name: frontendalmacen-container
+    ports:
+      - "5174:5174"
+    environment:
+      REACT_APP_BACKEND_URL: http://192.168.0.4:8000
+    volumes:
+      - ../frontendAlmacen/:/app
+    networks:
+      net-front:
+        ipv4_address: 192.168.1.2
+    depends_on:
+      - backend
+
+volumes:
+  db-dataAlmacen:
+
+networks:
+  net-back:
+    driver: bridge
+    ipam:
+      driver: default
+      config:
+        - subnet: 192.168.0.0/24
+  net-front:
+    driver: bridge
+    ipam:
+      driver: default
+      config:
+        - subnet: 192.168.1.0/24
