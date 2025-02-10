@@ -13,7 +13,7 @@ services:
     environment:
       MARIADB_ROOT_PASSWORD: telecable
       MARIADB_ROOT_USER: root
-      MARIADB_DATABASE: telecable-db
+      MARIADB_DATABASE: telecabledb
     volumes:
       - "db-dataAlmacen:/var/lib/mysql"
     networks:
@@ -31,7 +31,7 @@ services:
     environment:
       MARIADB_ROOT_PASSWORD: telecable
       MARIADB_ROOT_USER: root
-      MARIADB_DATABASE: telecable-db
+      MARIADB_DATABASE: telecabledb
       MARIADB_PORT: 3306
       MARIADB_HOST: mariadb
     volumes:
@@ -74,3 +74,4 @@ networks:
       driver: default
       config:
         - subnet: 192.168.1.0/24
+
